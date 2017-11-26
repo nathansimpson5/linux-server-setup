@@ -40,18 +40,45 @@ software installed:
   - mod-wsgi
   
 Process:
-  - create 'grader' user and give sudo privilege
-  - update and upgrade all packages using apt-get
-  - change ssh port to 2200
-    - update Lightsail AND ufw rules
-  - change timezone to UTC
-  - give grader ssh key access
-  - disable root ssh login
-  - clone catalog app from github
-  - create .wsgi file
-  - update client_secrets.json and paths in python files
-  - create catalog user in postgresql
-  - make sure catalog is live and functioning on 18.217.78.14
+  1. create 'grader' user and give sudo privilege
+    - sudo adduser grader
+    - sudo nano /etc/sudoers.d/grader -> grader ALL=(ALL:ALL) ALL -> save -> exit
+  2. update and upgrade all packages
+    - sudo apt-get update
+    - sudo apt-get upgrade
+    - sudo apt-get dist-upgrade
+  3. change ssh port to 2200 and configure ufw
+    - sudo nano /etc/ssh/sshd_config -> change port number -> save -> exit
+    - sudo ufw allow 2200/tcp
+    - sudo ufw allow 80/tcp
+    - sudo ufw allow 123/udp
+    - sudo ufw enable
+  4. change timezone to UTC
+    - sudo dpkg-reconfigure tzdata
+  5. give grader ssh key access
+    - use ssh-keygen on local machine (not aws)
+    - change to grader user on aws machine (su - grader)
+    - mkdir .ssh
+    - nano .ssh/authorized_keys
+    - paste in the public key from your local machine -> save -> exit
+    - chmod 700 .ssh
+    - chmod 644 .ssh/authorized_keys
+  6. disable root ssh login
+    - sudo nano /etc/ssh/sshd_config
+    - Change 'PermitRootLogin without-password' to 'PermitRootLogin no'
+  7. clone catalog app from github
+    - cd /var/www/
+    - sudo mkdir catalog
+    - sudo chown -R grader:grader catalog
+    - cd catalog
+    - git clone https://github.com/nathansimpson5/itemCatalog.git
+    - mv application.py __init__.py
+    - cd .. (current path should be /var/www/catalog)
+  8. create .wsgi file
+    - sudo nano catalog.wsgi -> follow flask instructions -> save -> exit
+  9. update client_secrets.json and paths in python files
+  10. create catalog user in postgresql
+  11. make sure catalog is live and functioning on 18.217.78.14
   
 Third-party resources:
   - Udacity forums
