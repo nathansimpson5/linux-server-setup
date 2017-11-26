@@ -1,8 +1,11 @@
 # linux-server-setup
 
 ip address: 18.217.78.14
+
 SSH port: 2200
+
 url: http://18.217.78.14/sport/
+
 
 software installed:
   - Ubuntu
